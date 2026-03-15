@@ -138,4 +138,11 @@ wss.on('connection', (ws) => {
 //   // Implement IPO update logic here
 // });
 
+// Start server (only in development)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
 module.exports = app;
