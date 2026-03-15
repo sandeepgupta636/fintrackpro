@@ -32,7 +32,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Database connection
-const dbPath = process.env.NODE_ENV === 'production' ? '/tmp/fintrack.db' : './fintrack.db';
+const dbPath = process.env.NODE_ENV === 'production' ? ':memory:' : './fintrack.db';
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Database connection error:', err.message);
@@ -133,9 +133,9 @@ wss.on('connection', (ws) => {
 });
 
 // Cron job for updating IPO info daily
-cron.schedule('0 0 * * *', () => {
-  console.log('Running daily IPO update');
-  // Implement IPO update logic here
-});
+// cron.schedule('0 0 * * *', () => {
+//   console.log('Running daily IPO update');
+//   // Implement IPO update logic here
+// });
 
 module.exports = app;
