@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/api';
 
 const Stocks = () => {
   const [watchlist, setWatchlist] = useState([]);
@@ -13,10 +13,7 @@ const Stocks = () => {
 
   const fetchWatchlist = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/stocks/watchlist', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axios.get('/api/stocks/watchlist');
       setWatchlist(response.data);
     } catch (error) {
       console.error('Error fetching watchlist:', error);
@@ -25,10 +22,7 @@ const Stocks = () => {
 
   const addToWatchlist = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('/api/stocks/watchlist', newStock, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.post('/api/stocks/watchlist', newStock);
       setNewStock({ ticker: '', sector: '' });
       fetchWatchlist();
     } catch (error) {
@@ -38,10 +32,7 @@ const Stocks = () => {
 
   const removeFromWatchlist = async (ticker) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`/api/stocks/watchlist/${ticker}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.delete(`/api/stocks/watchlist/${ticker}`);
       fetchWatchlist();
     } catch (error) {
       console.error('Error removing from watchlist:', error);
