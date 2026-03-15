@@ -61,30 +61,32 @@ function initDatabase() {
       .replace(/TRUE/g, '1')
       .replace(/FALSE/g, '0');
     
-    // Split SQL into individual statements and execute them
+    // Split SQL into individual statements and execute them sequentially
     const statements = sqliteSql.split(';').map(stmt => stmt.trim()).filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
     
-    let completed = 0;
-    const total = statements.length;
-    
-    if (total === 0) {
-      console.log('No SQL statements to execute');
-      insertDefaultUser();
-      return;
-    }
-    
-    statements.forEach((stmt, index) => {
-      db.run(stmt, (err) => {
-        if (err) {
-          console.error(`Error executing statement ${index + 1}:`, stmt, err);
-        } else {
-          completed++;
-          console.log(`Executed statement ${completed}/${total}`);
-          if (completed === total) {
-            console.log('Database initialized successfully');
-            insertDefaultUser();
+    db.serialize(() => {
+      let completed = 0;
+      const total = statements.length;
+      
+      if (total === 0) {
+        console.log('No SQL statements to execute');
+        insertDefaultUser();
+        return;
+      }
+      
+      statements.forEach((stmt, index) => {
+        db.run(stmt, (err) => {
+          if (err) {
+            console.error(`Error executing statement ${index + 1}:`, stmt.substring(0, 50), err);
+          } else {
+            completed++;
+            console.log(`Executed statement ${completed}/${total}`);
+            if (completed === total) {
+              console.log('Database initialized successfully');
+              insertDefaultUser();
+            }
           }
-        }
+        });
       });
     });
   }
