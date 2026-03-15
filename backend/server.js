@@ -39,7 +39,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
   } else {
     console.log('Connected to SQLite database');
     // Initialize tables
-    initDatabase();
+    // initDatabase(); // Temporarily disabled for testing
   }
 });
 
