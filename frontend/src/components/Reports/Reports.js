@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 
@@ -10,11 +10,7 @@ const Reports = () => {
     end_date: new Date().toISOString().split('T')[0]
   });
 
-  useEffect(() => {
-    fetchReports();
-  }, [dateRange]);
-
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -29,7 +25,11 @@ const Reports = () => {
     } catch (error) {
       console.error('Error fetching reports:', error);
     }
-  };
+  }, [dateRange]);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
 
   const exportReport = (type) => {
     // Implement export functionality
